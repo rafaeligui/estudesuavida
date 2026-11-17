@@ -244,6 +244,11 @@ mark {
 .scale-ends { display: flex; justify-content: space-between; max-width: 262px; font-family: var(--font-mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
 .ficha-out { font-family: var(--font-mono) !important; font-size: .9rem !important; max-width: none !important; min-height: 260px; }
 .ficha-acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.envio { display: grid; gap: 4px; margin-top: 8px; }
+.envio input[type="text"] { font-family: var(--font-body); font-size: 1.05rem; padding: 11px 13px; width: 100%; max-width: 640px; border: 1.5px solid var(--ink-soft); border-radius: 4px; background: var(--paper); color: var(--ink); }
+.consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; font-size: .98rem; line-height: 1.5; max-width: 72ch; cursor: pointer; }
+.consent input { width: 20px; height: 20px; margin-top: 3px; flex: none; accent-color: var(--deep); }
+.btn:disabled { opacity: .6; cursor: wait; transform: none; }
 .status { font-size: .95rem; color: var(--ink-soft); margin-top: 12px; min-height: 1.5em; }
 .formnav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--rule); }
 .formnote { font-size: .92rem; color: var(--ink-soft); margin-top: 16px; max-width: 72ch; }
@@ -416,7 +421,7 @@ footer p { max-width: 80ch; }
       <div>
         <h2>Conte a sua história para começar o estudo.</h2>
         <p class="intro">Este formulário serve para entender a sua vida antes de qualquer orientação. Ele segue o desenho do infinito. Começa no passado, passa pelo presente em corpo, mente e espírito e termina no futuro.</p>
-        <p class="intro">Leva cerca de 15 minutos. As respostas não saem deste aparelho. No final você recebe a sua ficha para copiar e enviar, se quiser.</p>
+        <p class="intro">Leva cerca de 15 minutos. As respostas ficam só neste aparelho até você decidir enviá-las. No final você revê a sua ficha e escolhe se quer enviá-la para nós.</p>
         <div class="formbox s0" id="caixa-form">
           <div class="formhead">
             <ol class="tabs" id="abas" aria-label="Etapas do formulário"></ol>
@@ -588,6 +593,7 @@ footer p { max-width: 80ch; }
 
   /* ---------- Formulário de estudo ---------- */
   var CHAVE = "esv-formulario-v1";
+  var DESTINO_FORMULARIO = "https://formsubmit.co/ajax/rafaeli.gui@gmail.com";
   var passos = [
     { nome: "Você", titulo: "Quem está estudando", texto: "Comece se apresentando.", campos: [
       { id: "f-nome", tipo: "texto", auto: "given-name", rotulo: "Como você gosta de ser chamado?", curto: "Nome" },
@@ -625,7 +631,7 @@ footer p { max-width: 80ch; }
       { id: "f-tempo", tipo: "lista", rotulo: "Quanto tempo por semana você consegue dedicar ao estudo?", curto: "Tempo por semana",
         opcoes: ["Até 1 hora", "De 1 a 3 horas", "De 3 a 5 horas", "Mais de 5 horas"] }
     ] },
-    { nome: "Sua ficha", titulo: "Sua ficha de estudo", texto: "Este é o resumo das suas respostas. Copie o texto e envie para o Estude a Sua Vida pelo canal em que você recebeu este formulário. Você decide se envia e o que envia." }
+    { nome: "Sua ficha", titulo: "Sua ficha de estudo", texto: "Este é o resumo das suas respostas. Confira, deixe um contato e envie para o Estude a Sua Vida. Você decide se envia e o que envia." }
   ];
 
   var respostas = {};
@@ -769,17 +775,86 @@ footer p { max-width: 80ch; }
     caixaFicha.appendChild(fichaTexto);
     sec.appendChild(caixaFicha);
 
+    var envio = el("div", "envio");
+    var contato = el("div", "field");
+    var rotContato = el("label", null, "Seu e-mail ou WhatsApp, para recebermos a sua ficha e respondermos");
+    rotContato.htmlFor = "f-contato";
+    var inpContato = el("input");
+    inpContato.type = "text";
+    inpContato.id = "f-contato";
+    inpContato.autocomplete = "email";
+    if (typeof respostas["f-contato"] === "string") inpContato.value = respostas["f-contato"];
+    inpContato.addEventListener("input", function () { respostas["f-contato"] = inpContato.value; salvar(); });
+    contato.appendChild(rotContato);
+    contato.appendChild(inpContato);
+    envio.appendChild(contato);
+    var consent = el("label", "consent");
+    var chk = el("input");
+    chk.type = "checkbox";
+    chk.id = "f-consentimento";
+    consent.appendChild(chk);
+    consent.appendChild(el("span", null, "Autorizo o envio destas respostas, que podem incluir informações sobre a minha saúde e a minha fé, à equipe do Estude a Sua Vida, para uso exclusivo no meu acompanhamento. Sei que posso pedir a exclusão a qualquer momento."));
+    envio.appendChild(consent);
+    sec.appendChild(envio);
+
     var acoes = el("div", "ficha-acoes");
-    var copiar = el("button", "btn", "Copiar a ficha");
+    var enviar = el("button", "btn", "Enviar a minha ficha");
+    enviar.type = "button";
+    var copiar = el("button", "btn ghost", "Copiar a ficha");
     copiar.type = "button";
     var apagar = el("button", "btn ghost", "Apagar as respostas");
     apagar.type = "button";
+    acoes.appendChild(enviar);
     acoes.appendChild(copiar);
     acoes.appendChild(apagar);
     sec.appendChild(acoes);
     fichaStatus = el("p", "status");
     fichaStatus.setAttribute("role", "status");
     sec.appendChild(fichaStatus);
+
+    enviar.addEventListener("click", function () {
+      if (fichaTexto.dataset.vazia) {
+        fichaStatus.textContent = "Ainda não há respostas para enviar.";
+        return;
+      }
+      if (!chk.checked) {
+        fichaStatus.textContent = "Para enviar, marque a autorização acima.";
+        chk.focus();
+        return;
+      }
+      if (!inpContato.value.trim()) {
+        fichaStatus.textContent = "Informe um e-mail ou WhatsApp para podermos responder.";
+        inpContato.focus();
+        return;
+      }
+      enviar.disabled = true;
+      fichaStatus.textContent = "Enviando...";
+      var dados = {
+        _subject: "Nova ficha de estudo: " + ((respostas["f-nome"] || "").trim() || "sem nome"),
+        _template: "box",
+        _captcha: "false",
+        nome: respostas["f-nome"] || "",
+        contato: inpContato.value.trim(),
+        consentimento: "Autorizado em " + new Date().toLocaleString("pt-BR"),
+        ficha: fichaTexto.value
+      };
+      fetch(DESTINO_FORMULARIO, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(dados)
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok && String(res.j.success) === "true") {
+            fichaStatus.textContent = "Ficha enviada. Obrigado por confiar a sua história ao Estude a Sua Vida.";
+          } else {
+            throw new Error("falha");
+          }
+        })
+        .catch(function () {
+          fichaStatus.textContent = "Não foi possível enviar agora. Tente de novo em instantes ou use o botão Copiar a ficha.";
+        })
+        .then(function () { enviar.disabled = false; });
+    });
 
     copiar.addEventListener("click", function () {
       if (fichaTexto.dataset.vazia) {
