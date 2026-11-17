@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estude a Sua Vida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: caderno de estudo. Margem esquerda com numeração de capítulo, conteúdo à direita.
+   Símbolo: o infinito. Passado no laço esquerdo, futuro no laço direito, e o centro
+   (o presente, o ser em corpo, mente e espírito) marcado com marca-texto amarelo. */
+:root {
+  --paper: #f2f5ef;
+  --paper-2: #e6ebe3;
+  --ink: #12292b;
+  --ink-soft: #4f6365;
+  --rule: #c5cfc7;
+  --marker: #f4d53f;
+  --deep: #1c6661;
+  --block: #1c6661;
+  --on-block: #f2f5ef;
+  --font-display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --margin-col: 120px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1d1f;
+    --paper-2: #16292b;
+    --ink: #e9eee6;
+    --ink-soft: #9fb1ad;
+    --rule: #2c4245;
+    --marker: #f4d53f;
+    --deep: #7fd0c6;
+    --block: #173f3e;
+    --on-block: #e9eee6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1d1f;
+  --paper-2: #16292b;
+  --ink: #e9eee6;
+  --ink-soft: #9fb1ad;
+  --rule: #2c4245;
+  --marker: #f4d53f;
+  --deep: #7fd0c6;
+  --block: #173f3e;
+  --on-block: #e9eee6;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--deep); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.02; letter-spacing: -0.02em; }
+p { margin: 0; max-width: 62ch; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* marca-texto */
+mark {
+  color: #12292b;
+  background: linear-gradient(var(--marker), var(--marker)) no-repeat 0 62% / 100% 58%;
+  padding: 0 0.12em;
+  margin: 0 -0.06em;
+  border-radius: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: stroke 0.8s 1.2s cubic-bezier(.2,.7,.2,1) backwards;
+}
+@keyframes stroke { from { background-size: 0% 58%; } }
+.hero h1 mark, .pull mark { white-space: nowrap; }
+
+/* cabeçalho */
+.top {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px 24px; padding: 20px 0; border-bottom: 1px solid var(--rule);
+}
+.brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em; text-decoration: none; }
+.brand span { font-weight: 500; }
+.logo { width: 36px; height: 18px; flex: none; }
+.logo path { fill: none; stroke: var(--ink); stroke-width: 7; stroke-linecap: round; }
+.logo circle { fill: var(--marker); }
+.top nav { display: flex; flex-wrap: wrap; gap: 6px 20px; font-family: var(--font-mono); font-size: 0.8rem; }
+.top nav a { text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+.top nav a:hover { border-bottom-color: var(--ink); }
+
+/* botões */
+.btn {
+  display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 1rem; line-height: 1.2;
+  text-decoration: none; padding: 14px 22px; border-radius: 4px; border: 2px solid var(--ink);
+  background: var(--ink); color: var(--paper); cursor: pointer; transition: transform .15s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--ink); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; padding: clamp(40px, 6vw, 80px) 0 clamp(40px, 6vw, 72px); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 22px; }
+.hero h1 { font-size: clamp(2.6rem, 6.4vw, 5rem); font-weight: 800; }
+.hero .lead { font-size: 1.25rem; margin-top: 28px; max-width: 46ch; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+/* símbolo do infinito */
+.inf { margin: 0; }
+.inf svg { display: block; width: 100%; max-width: 470px; height: auto; margin: 0 auto; }
+.inf .loop { fill: none; stroke: var(--ink); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; animation: draw 1.4s .15s cubic-bezier(.45,0,.2,1) backwards; }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+.inf .core { fill: var(--marker); }
+.inf .tick { stroke: var(--ink); stroke-width: 1.5; }
+.inf text { font-family: var(--font-display); font-weight: 700; font-size: 19px; fill: var(--ink); text-anchor: middle; }
+.inf text.now { font-size: 21px; }
+.inf text.sub { font-family: var(--font-mono); font-weight: 400; font-size: 12px; letter-spacing: .04em; fill: var(--ink-soft); }
+.inf figcaption { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); text-align: center; margin-top: 14px; }
+
+@media (prefers-reduced-motion: reduce) {
+  mark, .inf .loop { animation: none; }
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
+
+/* seções em formato caderno */
+.sec { display: grid; grid-template-columns: var(--margin-col) minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 56px); padding: clamp(48px, 7vw, 96px) 0; border-top: 1px solid var(--rule); }
+.sec > .tag { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; padding-top: 10px; }
+.sec > .tag b { display: block; font-weight: 500; color: var(--deep); }
+.sec h2 { font-size: clamp(2rem, 4.6vw, 3.4rem); font-weight: 800; max-width: 18ch; }
+.sec .intro { margin-top: 20px; font-size: 1.2rem; }
+.sec .intro + .intro { margin-top: 12px; }
+
+/* unidade */
+.dims { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); margin-top: 44px; }
+.dims h3 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; padding-bottom: 14px; border-bottom: 1px solid var(--rule); margin-bottom: 16px; }
+.dims p { font-size: 1.02rem; line-height: 1.55; }
+.pull { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.2rem); line-height: 1.15; letter-spacing: -0.01em; margin-top: 48px; max-width: 24ch; }
+
+/* manifesto */
+.mani { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; margin-top: 28px; }
+.mani .txt { display: grid; gap: 18px; }
+.mani .txt p { font-size: 1.2rem; }
+.ficha {
+  border: 1px solid var(--rule); border-radius: 4px; padding: 26px 26px 22px; position: relative;
+  background-color: var(--paper-2);
+  background-image: repeating-linear-gradient(transparent 0 35px, var(--rule) 35px 36px);
+  background-repeat: no-repeat;
+  background-position: 0 58px;
+  background-size: 100% calc(100% - 58px);
+}
+.ficha::before { content: ""; position: absolute; left: 44px; top: 0; bottom: 0; width: 1px; background: var(--deep); opacity: .5; }
+.ficha header { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); padding-left: 34px; margin-bottom: 14px; }
+.ficha ol { list-style: none; margin: 0; padding: 0 0 0 34px; counter-reset: q; }
+.ficha li { counter-increment: q; line-height: 36px; font-style: italic; position: relative; }
+.ficha li::before { content: counter(q); position: absolute; left: -34px; font-family: var(--font-mono); font-style: normal; font-size: .8rem; color: var(--deep); }
+
+/* método */
+.steps { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+.steps li { padding: 22px 22px 6px 0; border-right: 1px solid var(--rule); }
+.steps li + li { padding-left: 22px; }
+.steps li:last-child { border-right: 0; }
+.steps .n { font-family: var(--font-mono); font-size: .8rem; color: var(--deep); text-transform: uppercase; letter-spacing: .04em; }
+.steps h3 { font-size: 1.6rem; font-weight: 700; margin: 10px 0 10px; }
+.steps p { font-size: 1rem; line-height: 1.5; color: var(--ink-soft); }
+
+/* exercício */
+.exer { background: var(--block); color: var(--on-block); border-radius: 6px; padding: clamp(22px, 4vw, 44px); margin-top: 36px; }
+.exer label { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 8px; }
+.exer .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.exer input {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; width: 7.5ch;
+  padding: 8px 12px; border: 2px solid var(--on-block); border-radius: 4px; background: transparent; color: var(--on-block);
+}
+.exer input:focus-visible { outline-color: var(--marker); }
+.exer .hint { font-size: .95rem; opacity: .85; }
+.caps { list-style: none; margin: 28px 0 0; padding: 0; }
+.caps li { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 10px 28px; padding: 20px 0; border-top: 1px solid color-mix(in srgb, var(--on-block) 30%, transparent); }
+.caps .when { font-family: var(--font-mono); font-size: .8rem; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.caps .when b { display: block; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.caps .here { display: inline-block; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; background: var(--marker); color: #12292b; padding: 2px 8px; border-radius: 2px; margin-top: 8px; }
+.tri { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 24px; }
+.tri .dim { display: block; font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; opacity: .8; margin-bottom: 4px; }
+.tri .q { font-style: italic; font-size: 1.02rem; line-height: 1.4; }
+
+/* formulário */
+.formbox { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 6px; padding: clamp(18px, 3.5vw, 40px); margin-top: 36px; scroll-margin-top: 16px; }
+.formhead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.tab { font-family: var(--font-mono); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 999px; background: transparent; color: var(--ink-soft); cursor: pointer; }
+.tab:hover { border-color: var(--ink); color: var(--ink); }
+.tab[aria-current="step"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.mini { width: 96px; height: 48px; flex: none; }
+.mini path { fill: none; stroke: var(--rule); stroke-width: 6; stroke-linecap: round; transition: stroke .3s ease; }
+.mini circle { fill: var(--rule); transition: fill .3s ease; }
+.s0 .mini circle, .s2 .mini circle, .s4 .mini circle { fill: var(--marker); }
+.s1 .mini .l, .s3 .mini .r, .s4 .mini path { stroke: var(--ink); }
+.step h3 { font-size: 1.8rem; font-weight: 800; margin-top: 28px; }
+.step h3:focus { outline: none; }
+.step .lede { color: var(--ink-soft); font-size: 1.02rem; margin-top: 8px; }
+.dimtitle { font-size: 1.5rem; font-weight: 800; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--rule); }
+.field { display: grid; gap: 8px; margin: 22px 0 0; padding: 0; border: 0; min-width: 0; }
+.dimtitle + .field { margin-top: 14px; }
+.field > label, .field > legend { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.25; letter-spacing: -0.005em; padding: 0; }
+.field > legend { margin-bottom: 8px; }
+.field .hint { font-size: .9rem; color: var(--ink-soft); }
+.field input[type="text"], .field input[type="number"], .field select, .field textarea {
+  font-family: var(--font-body); font-size: 1.05rem; line-height: 1.5; padding: 11px 13px; width: 100%; max-width: 640px;
+  border: 1.5px solid var(--ink-soft); border-radius: 4px; background: var(--paper); color: var(--ink);
+}
+.field input[type="number"] { max-width: 160px; }
+.field select { max-width: 360px; }
+.field textarea { min-height: 96px; resize: vertical; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { position: relative; display: inline-block; }
+.opt input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.opt span { display: inline-block; padding: 8px 14px; border: 1.5px solid var(--ink-soft); border-radius: 999px; font-size: .98rem; line-height: 1.3; background: var(--paper); }
+.opt input:checked + span { background: var(--marker); border-color: var(--marker); color: #12292b; font-weight: 600; }
+.opt input:focus-visible + span { outline: 3px solid var(--deep); outline-offset: 2px; }
+.scale .opt span { border-radius: 4px; min-width: 46px; text-align: center; font-family: var(--font-display); font-weight: 700; }
+.scale-ends { display: flex; justify-content: space-between; max-width: 262px; font-family: var(--font-mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+.ficha-out { font-family: var(--font-mono) !important; font-size: .9rem !important; max-width: none !important; min-height: 260px; }
+.ficha-acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.status { font-size: .95rem; color: var(--ink-soft); margin-top: 12px; min-height: 1.5em; }
+.formnav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.formnote { font-size: .92rem; color: var(--ink-soft); margin-top: 16px; max-width: 72ch; }
+
+/* caminhos */
+.paths { list-style: none; margin: 40px 0 0; padding: 0; border-top: 2px solid var(--ink); }
+.paths li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 8px 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+.paths .n { font-family: var(--font-mono); font-size: .8rem; color: var(--deep); }
+.paths h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+.paths p { font-size: 1rem; color: var(--ink-soft); line-height: 1.5; }
+.chip { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; padding: 4px 10px; border: 1px solid var(--ink); border-radius: 999px; white-space: nowrap; }
+.chip.on { background: var(--marker); border-color: var(--marker); color: #12292b; }
+
+/* sobre */
+.about { display: grid; gap: 18px; margin-top: 28px; }
+.about p { font-size: 1.2rem; }
+
+/* lista */
+.join { background: var(--paper-2); border: 1px solid var(--rule); border-radius: 6px; padding: clamp(22px, 4vw, 44px); margin-top: 36px; }
+.join form { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+.join label { font-family: var(--font-mono); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+.join input {
+  flex: 1 1 260px; min-width: 0; font-family: var(--font-body); font-size: 1.1rem; padding: 13px 14px;
+  border: 2px solid var(--ink); border-radius: 4px; background: var(--paper); color: var(--ink);
+}
+.join .note { margin-top: 14px; font-size: .95rem; color: var(--ink-soft); min-height: 1.5em; }
+
+footer { border-top: 1px solid var(--rule); padding: 28px 0 48px; font-size: .9rem; color: var(--ink-soft); display: grid; gap: 10px; }
+footer p { max-width: 80ch; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+  .inf svg { max-width: 380px; }
+  .sec { grid-template-columns: 1fr; }
+  .sec > .tag { padding: 0 0 14px; }
+  .sec > .tag b { display: inline; margin-right: 8px; }
+  .mani { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps li, .steps li + li { padding: 20px 16px 16px 0; border-right: 0; border-bottom: 1px solid var(--rule); }
+  .dims { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .tri { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  body { font-size: 1.05rem; }
+  .steps { grid-template-columns: 1fr; }
+  .caps li { grid-template-columns: 1fr; }
+  .paths li { grid-template-columns: 36px minmax(0, 1fr); }
+  .paths .chip { grid-column: 2; justify-self: start; }
+  .formnav .btn { flex: 1 1 auto; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <a class="brand" href="#inicio">
+      <svg class="logo" viewBox="0 0 120 60" aria-hidden="true"><circle cx="60" cy="30" r="10"/><path d="M60 30 C46 9 12 9 12 30 C12 51 46 51 60 30 C74 9 108 9 108 30 C108 51 74 51 60 30"/></svg>
+      <span style="font-weight:inherit">Estude <span>a Sua</span> Vida</span>
+    </a>
+    <nav aria-label="Seções do site">
+      <a href="#unidade">Unidade</a>
+      <a href="#manifesto">Manifesto</a>
+      <a href="#metodo">Método</a>
+      <a href="#exercicio">Exercício</a>
+      <a href="#formulario">Formulário</a>
+      <a href="#caminhos">Caminhos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#lista">Lista de espera</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Desenvolvimento pessoal · movimento Estude a Sua Vida</p>
+        <h1>Você é <mark>um só ser</mark> em corpo, mente e espírito.</h1>
+        <p class="lead">No centro do infinito, onde o passado e o futuro se conectam, está você hoje. Estude a Sua Vida ensina a ler a sua história por inteiro para que os próximos passos fiquem claros.</p>
+        <div class="actions">
+          <a class="btn" href="#exercicio">Começar pelo exercício</a>
+          <a class="btn ghost" href="#formulario">Preencher o formulário</a>
+        </div>
+      </div>
+      <figure class="inf">
+        <svg viewBox="0 0 440 250" role="img" aria-label="Símbolo do infinito. O laço da esquerda é o passado, o laço da direita é o futuro, e o ponto onde eles se cruzam, marcado em amarelo, é o presente, em corpo, mente e espírito.">
+          <circle class="core" cx="220" cy="110" r="24"/>
+          <path class="loop" pathLength="1" d="M220 110 C170 35 50 35 50 110 C50 185 170 185 220 110 C270 35 390 35 390 110 C390 185 270 185 220 110"/>
+          <text x="126" y="117">Passado</text>
+          <text x="314" y="117">Futuro</text>
+          <line class="tick" x1="220" y1="141" x2="220" y2="182"/>
+          <text class="now" x="220" y="207">Presente</text>
+          <text class="sub" x="220" y="230">corpo · mente · espírito</text>
+        </svg>
+        <figcaption>O passado e o futuro se conectam no centro</figcaption>
+      </figure>
+    </section>
+
+    <section class="sec" id="unidade">
+      <div class="tag"><b>Cap. 01</b>A unidade</div>
+      <div>
+        <h2>O centro de tudo é a unidade do ser.</h2>
+        <p class="intro">Costumamos cuidar de cada parte em separado, o corpo em um lugar, a mente em outro e o espírito em outro. Na vida, as três respondem juntas.</p>
+        <p class="intro">Uma preocupação tira o sono. Um corpo cansado encurta a paciência. A falta de sentido pesa nos dois.</p>
+        <div class="dims">
+          <div><h3>Corpo</h3><p>O corpo registra o que foi vivido. Sono, tensão, energia e hábitos fazem parte do material de estudo e mostram o que a sua rotina está pedindo.</p></div>
+          <div><h3>Mente</h3><p>Pensamentos, emoções e crenças aprendidas cedo viram o filtro pelo qual você enxerga tudo. Conhecer o filtro muda o que você vê.</p></div>
+          <div><h3>Espírito</h3><p>Sentido, fé e propósito. É a dimensão que responde para que você vive, e onde entram os ensinamentos de Jesus como sabedoria para a vida diária.</p></div>
+        </div>
+        <p class="pull">Estudar a sua vida é ler as três <mark>ao mesmo tempo</mark>.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="manifesto">
+      <div class="tag"><b>Cap. 02</b>Manifesto</div>
+      <div>
+        <h2>Você estudou para tudo. Menos para a própria vida.</h2>
+        <div class="mani">
+          <div class="txt">
+            <p>Estudamos para a prova, para a profissão, para o concurso. Quase ninguém nos ensina a estudar a matéria que mais pesa no resultado, que é a nossa história.</p>
+            <p>O que você viveu deixou marcas no corpo, crenças na mente e perguntas no espírito. Enquanto esse material fica sem leitura, ele decide por você. Os mesmos conflitos voltam, com outros nomes e outros rostos.</p>
+            <p>Estudar a sua vida é abrir esse caderno. Ler o que está escrito, <mark>dar um novo significado</mark> ao que doeu e escrever as próximas páginas de propósito.</p>
+          </div>
+          <aside class="ficha" aria-label="Ficha de estudo número 1">
+            <header>Ficha de estudo nº 1</header>
+            <ol>
+              <li>O que o meu corpo está dizendo?</li>
+              <li>O que a minha mente repete?</li>
+              <li>O que o meu espírito procura?</li>
+              <li>Qual é o próximo passo possível?</li>
+            </ol>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="metodo">
+      <div class="tag"><b>Cap. 03</b>Método</div>
+      <div>
+        <h2>Quatro movimentos no desenho do infinito.</h2>
+        <p class="intro">O infinito é o nosso símbolo. O passado e o futuro se conectam no centro, que é o presente. O estudo percorre esse desenho, sempre na mesma ordem, e em cada etapa você observa o ser inteiro.</p>
+        <ol class="steps">
+          <li><span class="n">01 · Passado</span><h3>Olhar</h3><p>Montar a linha do tempo da sua vida e anotar, em cada fase, como estavam o corpo, a mente e o espírito.</p></li>
+          <li><span class="n">02 · Passado</span><h3>Entender</h3><p>Reconhecer os padrões que se repetem e a origem das crenças que guiam as suas escolhas.</p></li>
+          <li><span class="n">03 · Presente</span><h3>Ressignificar</h3><p>Reler o que aconteceu com a maturidade de hoje e tirar de cada capítulo o aprendizado que ele carrega.</p></li>
+          <li><span class="n">04 · Futuro</span><h3>Avançar</h3><p>Transformar o aprendizado em decisão, com um próximo passo claro, pequeno e bom para o ser inteiro.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" id="exercicio">
+      <div class="tag"><b>Cap. 04</b>Exercício</div>
+      <div>
+        <h2>Sua vida em capítulos, lida em três dimensões.</h2>
+        <p class="intro">Informe o ano em que você nasceu. A sua história aparece dividida em capítulos de dez anos, e cada capítulo traz uma pergunta para o corpo, uma para a mente e uma para o espírito. Pegue papel e caneta e responda sem pressa.</p>
+        <div class="exer">
+          <label for="ano-nascimento">Ano de nascimento</label>
+          <div class="row">
+            <input id="ano-nascimento" type="number" inputmode="numeric" value="1990" min="1920" max="2020" aria-describedby="ano-ajuda">
+            <span class="hint" id="ano-ajuda" role="status">Exemplo com 1990. Troque pelo seu ano.</span>
+          </div>
+          <ol class="caps" id="capitulos"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="formulario">
+      <div class="tag"><b>Cap. 05</b>Formulário</div>
+      <div>
+        <h2>Conte a sua história para começar o estudo.</h2>
+        <p class="intro">Este formulário serve para entender a sua vida antes de qualquer orientação. Ele segue o desenho do infinito. Começa no passado, passa pelo presente em corpo, mente e espírito e termina no futuro.</p>
+        <p class="intro">Leva cerca de 15 minutos. As respostas não saem deste aparelho. No final você recebe a sua ficha para copiar e enviar, se quiser.</p>
+        <div class="formbox s0" id="caixa-form">
+          <div class="formhead">
+            <ol class="tabs" id="abas" aria-label="Etapas do formulário"></ol>
+            <svg class="mini" viewBox="0 0 120 60" aria-hidden="true">
+              <circle cx="60" cy="30" r="10"/>
+              <path class="l" d="M60 30 C46 9 12 9 12 30 C12 51 46 51 60 30"/>
+              <path class="r" d="M60 30 C74 9 108 9 108 30 C108 51 74 51 60 30"/>
+            </svg>
+          </div>
+          <form id="form-estudo" novalidate></form>
+          <div class="formnav">
+            <button type="button" class="btn ghost" id="form-voltar">Voltar</button>
+            <button type="button" class="btn" id="form-avancar">Continuar</button>
+          </div>
+        </div>
+        <p class="formnote">Este formulário é um exercício de autoconhecimento e não é uma avaliação médica ou psicológica. Se você está em sofrimento intenso ou pensando em se machucar, ligue para o CVV no 188 ou procure um serviço de saúde.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="caminhos">
+      <div class="tag"><b>Cap. 06</b>Caminhos</div>
+      <div>
+        <h2>Do primeiro contato ao estudo completo.</h2>
+        <p class="intro">Cada pessoa entra por uma porta. Os materiais abaixo seguem a mesma sequência do método e estão sendo preparados.</p>
+        <ol class="paths">
+          <li><span class="n">01</span><div><h3>Conteúdo aberto</h3><p>Reflexões e exercícios curtos nas redes sociais para começar a olhar a própria história.</p></div><span class="chip on">Gratuito</span></li>
+          <li><span class="n">02</span><div><h3>Guia de autoestudo</h3><p>Um caderno de perguntas para montar a sua linha do tempo e identificar padrões por conta própria.</p></div><span class="chip">Em preparação</span></li>
+          <li><span class="n">03</span><div><h3>Curso Estude a Sua Vida</h3><p>O método completo, etapa por etapa, com aulas e exercícios para corpo, mente e espírito.</p></div><span class="chip">Em preparação</span></li>
+          <li><span class="n">04</span><div><h3>Comunidade</h3><p>Um grupo para seguir estudando com outras pessoas, com encontros e temas mensais.</p></div><span class="chip">Em preparação</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="sec" id="sobre">
+      <div class="tag"><b>Cap. 07</b>Sobre</div>
+      <div>
+        <h2>De onde vem este movimento.</h2>
+        <div class="about">
+          <p>O Estude a Sua Vida nasceu de uma ideia de Guilherme Rafaeli e Luis Fontana, cofundadores do movimento.</p>
+          <p>Há mais de cinco anos, Guilherme estuda a mente humana, o funcionamento do corpo e a ligação entre corpo, mente e espírito. Passou por várias áreas e vertentes, e também pela Bíblia e pelo cristianismo, com atenção ao lado metafísico dos ensinamentos de Jesus.</p>
+          <p>O movimento se apoia em duas convicções. A primeira é que o ser humano é uma unidade de corpo, mente e espírito. A segunda é que a saída está em estudar a própria vida, o que significa olhar para o passado, entender o que viveu, dar um novo significado e então decidir os próximos passos.</p>
+          <p>Este site existe para ensinar esse estudo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="lista">
+      <div class="tag"><b>Cap. 08</b>Lista de espera</div>
+      <div>
+        <h2>Receba o primeiro material quando ele sair.</h2>
+        <div class="join">
+          <label for="email-lista">Seu e-mail</label>
+          <form id="form-lista" novalidate>
+            <input id="email-lista" type="email" autocomplete="email" placeholder="nome@exemplo.com" required>
+            <button class="btn" type="submit">Quero ser avisado</button>
+          </form>
+          <p class="note" id="nota-lista" role="status">O cadastro ainda não está ativo. Em breve você poderá deixar o seu e-mail aqui.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Estude a Sua Vida.</strong> Conteúdo educativo de desenvolvimento pessoal.</p>
+    <p>O material deste site não substitui acompanhamento médico, psicológico ou psiquiátrico. Se você está em sofrimento intenso, procure um profissional de saúde.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined && txt !== null) e.textContent = txt;
+    return e;
+  }
+
+  /* ---------- Exercício: a vida em capítulos ---------- */
+  var nomes = ["Corpo", "Mente", "Espírito"];
+  // Uma tríade de perguntas por década: corpo, mente, espírito.
+  var fases = [
+    ["Do que o seu corpo se lembra desta fase? Aconchego, medo, doença, liberdade?",
+     "Que frases você mais ouvia em casa? Quais delas repete até hoje?",
+     "O que lhe ensinaram sobre Deus, fé e sentido da vida?"],
+    ["Como você se sentia no próprio corpo enquanto ele mudava?",
+     "Quem você tentou ser para ser aceito? O que precisou esconder?",
+     "Que perguntas sobre a vida apareceram pela primeira vez?"],
+    ["Como você tratou o seu corpo? Com descanso, com excessos, com cuidado?",
+     "Quais escolhas você fez por convicção? Quais fez por medo ou pela expectativa dos outros?",
+     "O que dava sentido aos seus dias?"],
+    ["Que sinais o corpo deu e você adiou escutar?",
+     "Que padrão se repetiu nos relacionamentos, no trabalho e no dinheiro?",
+     "O que passou a importar mais do que antes?"],
+    ["O que mudou na sua energia? O que isso pediu da sua rotina?",
+     "O que você construiu que ainda faz sentido? O que já cumpriu o papel?",
+     "Que crença sobre a vida você precisou rever?"],
+    ["Que cuidado o seu corpo passou a exigir?",
+     "Que perdas desta fase pedem um novo significado?",
+     "O que você deseja deixar para quem vem depois?"],
+    ["Como você cuidou do corpo que o trouxe até aqui?",
+     "Que aprendizado desta fase você gostaria de passar adiante?",
+     "O que lhe trouxe paz nesta fase?"],
+    ["O que o seu corpo ainda permitia? O que pedia em troca?",
+     "Que história da sua vida você passou a contar de outro jeito?",
+     "Pelo que você se tornou grato?"]
+  ];
+  var agora = [
+    "O que o seu corpo está dizendo hoje?",
+    "Que pensamento mais ocupa os seus dias?",
+    "O que este capítulo está pedindo que você aprenda?"
+  ];
+  var anoAtual = new Date().getFullYear();
+  var campo = document.getElementById("ano-nascimento");
+  var lista = document.getElementById("capitulos");
+  var ajuda = document.getElementById("ano-ajuda");
+  campo.min = String(anoAtual - 100);
+  campo.max = String(anoAtual - 10);
+
+  function capitulo(titulo, periodo, idades, triade, atual) {
+    var li = el("li");
+    var quando = el("div", "when");
+    quando.appendChild(el("b", null, titulo));
+    quando.appendChild(document.createTextNode(periodo));
+    quando.appendChild(el("br"));
+    quando.appendChild(document.createTextNode(idades));
+    if (atual) {
+      quando.appendChild(el("br"));
+      quando.appendChild(el("span", "here", "Você está aqui"));
+    }
+    var tri = el("div", "tri");
+    for (var k = 0; k < 3; k++) {
+      var bloco = el("div");
+      bloco.appendChild(el("span", "dim", nomes[k]));
+      bloco.appendChild(el("p", "q", triade[k]));
+      tri.appendChild(bloco);
+    }
+    li.appendChild(quando);
+    li.appendChild(tri);
+    return li;
+  }
+
+  function montarCapitulos() {
+    var nasc = parseInt(campo.value, 10);
+    lista.textContent = "";
+    if (!nasc || nasc < anoAtual - 100 || nasc > anoAtual - 10) {
+      ajuda.textContent = "Digite um ano entre " + (anoAtual - 100) + " e " + (anoAtual - 10) + ".";
+      return;
+    }
+    var idade = anoAtual - nasc;
+    ajuda.textContent = "Cerca de " + idade + " anos de história para estudar.";
+    var total = Math.floor(idade / 10) + 1;
+    for (var i = 0; i < total; i++) {
+      var de = i * 10;
+      var ate = Math.min(de + 9, idade);
+      var atual = i === total - 1;
+      lista.appendChild(capitulo(
+        "Capítulo " + (i + 1),
+        atual ? "desde " + (nasc + de) : (nasc + de) + " a " + (nasc + ate),
+        de === ate ? de + " anos" : de + " a " + ate + " anos",
+        atual ? agora : fases[Math.min(i, fases.length - 1)],
+        atual
+      ));
+    }
+  }
+  campo.addEventListener("input", montarCapitulos);
+  montarCapitulos();
+
+  /* ---------- Formulário de estudo ---------- */
+  var CHAVE = "esv-formulario-v1";
+  var passos = [
+    { nome: "Você", titulo: "Quem está estudando", texto: "Comece se apresentando.", campos: [
+      { id: "f-nome", tipo: "texto", auto: "given-name", rotulo: "Como você gosta de ser chamado?", curto: "Nome" },
+      { id: "f-ano", tipo: "numero", rotulo: "Em que ano você nasceu?", curto: "Ano de nascimento" },
+      { id: "f-origem", tipo: "lista", rotulo: "Como você conheceu o Estude a Sua Vida?", curto: "Como conheceu",
+        opcoes: ["Instagram", "YouTube", "Indicação de alguém", "Busca na internet", "Outro"] },
+      { id: "f-motivo", tipo: "longo", rotulo: "O que fez você querer estudar a sua vida agora?", curto: "Por que agora" }
+    ] },
+    { nome: "Passado", titulo: "O laço do passado", texto: "Olhe para trás sem julgamento. Respostas curtas bastam.", campos: [
+      { id: "f-infancia", tipo: "longo", rotulo: "Em poucas palavras, como foi a sua infância?", curto: "Infância" },
+      { id: "f-marcos", tipo: "longo", rotulo: "Quais foram os três acontecimentos que mais marcaram a sua vida?", curto: "Acontecimentos marcantes",
+        dica: "Anote a idade que você tinha em cada um." },
+      { id: "f-padroes", tipo: "multi", rotulo: "Em quais áreas a mesma história se repete?", curto: "Áreas em que a história se repete",
+        opcoes: ["Relacionamentos", "Família", "Trabalho", "Dinheiro", "Saúde", "Fé"] },
+      { id: "f-padrao", tipo: "longo", rotulo: "Descreva o padrão que mais incomoda.", curto: "Padrão que mais incomoda" },
+      { id: "f-peso", tipo: "longo", rotulo: "Há algo do passado que ainda pesa e que você gostaria de ressignificar?", curto: "O que ainda pesa",
+        dica: "Opcional. Escreva só o que se sentir à vontade para contar." }
+    ] },
+    { nome: "Presente", titulo: "O centro, onde você está hoje", texto: "No centro do infinito está o presente. Observe as três dimensões do seu ser. Nas notas, 1 é muito mal e 5 é muito bem.", campos: [
+      { id: "f-corpo-nota", tipo: "escala", grupo: "Corpo", rotulo: "Como estão o seu sono, a sua energia e a sua alimentação?", curto: "Corpo, nota de 1 a 5" },
+      { id: "f-corpo", tipo: "longo", rotulo: "O que o seu corpo está pedindo?", curto: "O corpo pede" },
+      { id: "f-mente-nota", tipo: "escala", grupo: "Mente", rotulo: "Como estão os seus pensamentos e as suas emoções?", curto: "Mente, nota de 1 a 5" },
+      { id: "f-mente", tipo: "longo", rotulo: "Que pensamento mais se repete nos seus dias?", curto: "Pensamento que se repete" },
+      { id: "f-espirito-nota", tipo: "escala", grupo: "Espírito", rotulo: "Quanto sentido e quanta paz você sente na sua vida?", curto: "Espírito, nota de 1 a 5" },
+      { id: "f-espirito", tipo: "longo", rotulo: "O que dá sentido à sua vida hoje?", curto: "O que dá sentido" },
+      { id: "f-area", tipo: "lista", grupo: "O ser inteiro", rotulo: "Qual área da vida pede mais atenção agora?", curto: "Área que pede atenção",
+        opcoes: ["Saúde do corpo", "Emoções e pensamentos", "Relacionamentos", "Família", "Trabalho e dinheiro", "Vida espiritual"] }
+    ] },
+    { nome: "Futuro", titulo: "O laço do futuro", texto: "Agora olhe para a frente a partir do que você acabou de escrever.", campos: [
+      { id: "f-visao", tipo: "longo", rotulo: "Daqui a um ano, como você quer estar em corpo, mente e espírito?", curto: "Daqui a um ano" },
+      { id: "f-passo", tipo: "longo", rotulo: "Qual é o primeiro passo que você já sabe que precisa dar?", curto: "Primeiro passo" },
+      { id: "f-trava", tipo: "longo", rotulo: "O que tem impedido esse passo?", curto: "O que impede" },
+      { id: "f-formato", tipo: "multi", rotulo: "Como você prefere estudar?", curto: "Prefere estudar com",
+        opcoes: ["Vídeos curtos", "Aulas gravadas", "Leitura e exercícios escritos", "Encontros ao vivo", "Grupo com outras pessoas", "Acompanhamento individual"] },
+      { id: "f-tempo", tipo: "lista", rotulo: "Quanto tempo por semana você consegue dedicar ao estudo?", curto: "Tempo por semana",
+        opcoes: ["Até 1 hora", "De 1 a 3 horas", "De 3 a 5 horas", "Mais de 5 horas"] }
+    ] },
+    { nome: "Sua ficha", titulo: "Sua ficha de estudo", texto: "Este é o resumo das suas respostas. Copie o texto e envie para o Estude a Sua Vida pelo canal em que você recebeu este formulário. Você decide se envia e o que envia." }
+  ];
+
+  var respostas = {};
+  var passo = 0;
+  var caixa = document.getElementById("caixa-form");
+  var form = document.getElementById("form-estudo");
+  var abas = document.getElementById("abas");
+  var voltar = document.getElementById("form-voltar");
+  var avancar = document.getElementById("form-avancar");
+  var secoes = [];
+  var botoes = [];
+  var fichaTexto = null;
+  var fichaStatus = null;
+
+  function salvar() {
+    try { localStorage.setItem(CHAVE, JSON.stringify({ r: respostas, p: passo })); } catch (e) { /* sem armazenamento: segue em memória */ }
+  }
+  function carregar() {
+    try {
+      var s = JSON.parse(localStorage.getItem(CHAVE) || "null");
+      if (s && s.r && typeof s.r === "object") return s;
+    } catch (e) { /* ignora rascunho ilegível */ }
+    return null;
+  }
+
+  function campoSimples(c) {
+    var box = el("div", "field");
+    var rot = el("label", null, c.rotulo);
+    rot.htmlFor = c.id;
+    box.appendChild(rot);
+    if (c.dica) box.appendChild(el("span", "hint", c.dica));
+    var inp;
+    if (c.tipo === "longo") {
+      inp = el("textarea");
+      inp.rows = 3;
+    } else if (c.tipo === "lista") {
+      inp = el("select");
+      var vazio = el("option", null, "Escolha uma opção");
+      vazio.value = "";
+      inp.appendChild(vazio);
+      c.opcoes.forEach(function (t) {
+        var o = el("option", null, t);
+        o.value = t;
+        inp.appendChild(o);
+      });
+    } else {
+      inp = el("input");
+      inp.type = c.tipo === "numero" ? "number" : "text";
+      if (c.tipo === "numero") inp.inputMode = "numeric";
+      if (c.auto) inp.autocomplete = c.auto;
+    }
+    inp.id = c.id;
+    inp.name = c.id;
+    if (typeof respostas[c.id] === "string") inp.value = respostas[c.id];
+    function ler() { respostas[c.id] = inp.value; salvar(); }
+    inp.addEventListener("input", ler);
+    inp.addEventListener("change", ler);
+    box.appendChild(inp);
+    return box;
+  }
+
+  function campoOpcoes(c) {
+    var escala = c.tipo === "escala";
+    var box = el("fieldset", "field" + (escala ? " scale" : ""));
+    box.appendChild(el("legend", null, c.rotulo));
+    var grupo = el("div", "opts");
+    var itens = escala ? ["1", "2", "3", "4", "5"] : c.opcoes;
+    var atual = respostas[c.id];
+    itens.forEach(function (t, i) {
+      var rot = el("label", "opt");
+      var inp = el("input");
+      inp.type = escala ? "radio" : "checkbox";
+      inp.name = c.id;
+      inp.id = c.id + "-" + i;
+      inp.value = t;
+      if (escala) {
+        inp.checked = atual === t;
+        inp.setAttribute("aria-label", "Nota " + t + " de 5");
+      } else {
+        inp.checked = Array.isArray(atual) && atual.indexOf(t) !== -1;
+      }
+      inp.addEventListener("change", function () {
+        if (escala) {
+          respostas[c.id] = t;
+        } else {
+          var marcados = [];
+          var todos = grupo.querySelectorAll("input");
+          for (var k = 0; k < todos.length; k++) if (todos[k].checked) marcados.push(todos[k].value);
+          respostas[c.id] = marcados;
+        }
+        salvar();
+      });
+      rot.appendChild(inp);
+      rot.appendChild(el("span", null, t));
+      grupo.appendChild(rot);
+    });
+    box.appendChild(grupo);
+    if (escala) {
+      var pontas = el("div", "scale-ends");
+      pontas.appendChild(el("span", null, "Muito mal"));
+      pontas.appendChild(el("span", null, "Muito bem"));
+      box.appendChild(pontas);
+    }
+    return box;
+  }
+
+  function textoDaFicha() {
+    var linhas = [];
+    passos.forEach(function (p) {
+      if (!p.campos) return;
+      var bloco = [];
+      p.campos.forEach(function (c) {
+        var v = respostas[c.id];
+        if (Array.isArray(v)) v = v.join(", ");
+        v = v === undefined || v === null ? "" : String(v).trim();
+        if (v) bloco.push(c.curto + ": " + v);
+      });
+      if (bloco.length) {
+        linhas.push(p.nome.toUpperCase());
+        linhas = linhas.concat(bloco);
+        linhas.push("");
+      }
+    });
+    if (!linhas.length) return "";
+    return "FICHA DE ESTUDO · ESTUDE A SUA VIDA\n\n" + linhas.join("\n").replace(/\s+$/, "");
+  }
+
+  function montarFicha() {
+    var t = textoDaFicha();
+    fichaTexto.value = t || "Você ainda não respondeu nenhuma pergunta. Volte às etapas anteriores para preencher.";
+    fichaTexto.dataset.vazia = t ? "" : "1";
+  }
+
+  function blocoFicha(sec) {
+    fichaTexto = el("textarea", "ficha-out");
+    fichaTexto.id = "ficha-texto";
+    fichaTexto.readOnly = true;
+    fichaTexto.rows = 14;
+    fichaTexto.setAttribute("aria-label", "Texto da sua ficha de estudo");
+    var caixaFicha = el("div", "field");
+    caixaFicha.appendChild(fichaTexto);
+    sec.appendChild(caixaFicha);
+
+    var acoes = el("div", "ficha-acoes");
+    var copiar = el("button", "btn", "Copiar a ficha");
+    copiar.type = "button";
+    var apagar = el("button", "btn ghost", "Apagar as respostas");
+    apagar.type = "button";
+    acoes.appendChild(copiar);
+    acoes.appendChild(apagar);
+    sec.appendChild(acoes);
+    fichaStatus = el("p", "status");
+    fichaStatus.setAttribute("role", "status");
+    sec.appendChild(fichaStatus);
+
+    copiar.addEventListener("click", function () {
+      if (fichaTexto.dataset.vazia) {
+        fichaStatus.textContent = "Ainda não há respostas para copiar.";
+        return;
+      }
+      function manual() {
+        fichaTexto.focus();
+        fichaTexto.select();
+        fichaStatus.textContent = "Não foi possível copiar sozinho. O texto está selecionado, use o comando de copiar do seu aparelho.";
+      }
+      try {
+        navigator.clipboard.writeText(fichaTexto.value).then(function () {
+          fichaStatus.textContent = "Ficha copiada. Cole na mensagem que você vai enviar.";
+        }, manual);
+      } catch (e) { manual(); }
+    });
+
+    var armado = false;
+    var relogio = null;
+    apagar.addEventListener("click", function () {
+      if (!armado) {
+        armado = true;
+        apagar.textContent = "Clique de novo para apagar tudo";
+        relogio = setTimeout(function () { armado = false; apagar.textContent = "Apagar as respostas"; }, 5000);
+        return;
+      }
+      clearTimeout(relogio);
+      respostas = {};
+      try { localStorage.removeItem(CHAVE); } catch (e) { /* nada a apagar */ }
+      construir();
+      mostrar(passos.length - 1, false);
+      fichaStatus.textContent = "Respostas apagadas deste aparelho.";
+    });
+  }
+
+  function construir() {
+    form.textContent = "";
+    abas.textContent = "";
+    secoes = [];
+    botoes = [];
+    passos.forEach(function (p, i) {
+      var li = el("li");
+      var b = el("button", "tab", (i + 1) + " " + p.nome);
+      b.type = "button";
+      b.addEventListener("click", function () { mostrar(i, true); });
+      li.appendChild(b);
+      abas.appendChild(li);
+      botoes.push(b);
+
+      var sec = el("section", "step");
+      var h = el("h3", null, p.titulo);
+      h.tabIndex = -1;
+      sec.appendChild(h);
+      sec.appendChild(el("p", "lede", p.texto));
+      if (p.campos) {
+        p.campos.forEach(function (c) {
+          if (c.grupo) sec.appendChild(el("h4", "dimtitle", c.grupo));
+          sec.appendChild(c.tipo === "multi" || c.tipo === "escala" ? campoOpcoes(c) : campoSimples(c));
+        });
+      } else {
+        blocoFicha(sec);
+      }
+      form.appendChild(sec);
+      secoes.push(sec);
+    });
+  }
+
+  function mostrar(n, foco) {
+    passo = Math.max(0, Math.min(n, passos.length - 1));
+    secoes.forEach(function (s, i) { s.hidden = i !== passo; });
+    botoes.forEach(function (b, i) {
+      if (i === passo) b.setAttribute("aria-current", "step");
+      else b.removeAttribute("aria-current");
+    });
+    caixa.className = "formbox s" + passo;
+    voltar.style.visibility = passo === 0 ? "hidden" : "visible";
+    avancar.hidden = passo === passos.length - 1;
+    avancar.textContent = passo === passos.length - 2 ? "Ver a minha ficha" : "Continuar";
+    if (passo === passos.length - 1) montarFicha();
+    salvar();
+    if (foco) {
+      caixa.scrollIntoView({ block: "start" });
+      secoes[passo].querySelector("h3").focus({ preventScroll: true });
+    }
+  }
+
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+  voltar.addEventListener("click", function () { mostrar(passo - 1, true); });
+  avancar.addEventListener("click", function () { mostrar(passo + 1, true); });
+
+  var hot = window.claude && window.claude.hot;
+  if (hot && typeof hot.snapshot === "function") {
+    hot.snapshot(function () { return { r: respostas, p: passo }; });
+  }
+  function iniciar(dados) {
+    var s = dados && dados.r ? dados : carregar();
+    if (s) {
+      respostas = s.r || {};
+      passo = typeof s.p === "number" ? s.p : 0;
+    }
+    construir();
+    mostrar(passo, false);
+  }
+  if (hot && typeof hot.ready === "function") hot.ready(iniciar);
+  else iniciar((hot && hot.data) || {});
+
+  /* ---------- Lista de espera (demonstração) ---------- */
+  var formLista = document.getElementById("form-lista");
+  var nota = document.getElementById("nota-lista");
+  var email = document.getElementById("email-lista");
+  formLista.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!email.value || !email.checkValidity()) {
+      nota.textContent = "Digite um e-mail válido, como nome@exemplo.com.";
+      email.focus();
+      return;
+    }
+    nota.textContent = "O cadastro ainda não está ativo e o seu e-mail não foi salvo. Volte em breve.";
+  });
+})();
+</script>
+</body>
+</html>
